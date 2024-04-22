@@ -29,6 +29,14 @@ dependencies {
     implementation("com.baomidou:mybatis-plus-boot-starter:3.2.0")
     // implementation flyway
     implementation 'org.flywaydb:flyway-core:7.0.0'
+    //implementation mongock
+    implementation(group: 'com.github.cloudyrock.mongock', name: 'mongock-spring-v5', version: '4.3.8') {
+        exclude group: 'org.springframework.boot'
+    }
+    //implementation springdata mongodb driver exclude spring-boot
+    implementation(group: 'com.github.cloudyrock.mongock', name: 'mongodb-springdata-v2-driver', version: '4.3.8') {
+        exclude group: 'org.springframework.boot'
+    }
 
 }
 

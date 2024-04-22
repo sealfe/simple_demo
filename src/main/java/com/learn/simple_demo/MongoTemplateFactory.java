@@ -1,7 +1,10 @@
 package com.learn.simple_demo;
 
+import com.github.cloudyrock.mongock.driver.mongodb.springdata.v2.SpringDataMongoV2Driver;
+import com.github.cloudyrock.spring.v5.MongockSpring5;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.MongoTransactionManager;
@@ -18,10 +21,12 @@ import static com.learn.simple_demo.Context.getTenantId;
 @Configuration
 public class MongoTemplateFactory {
 
+    private static ApplicationContext applicationContext;
     private static MongoTemplate mongoTemplate;
 
-    public MongoTemplateFactory(MongoTemplate mongoTemplate) {
+    public MongoTemplateFactory(MongoTemplate mongoTemplate, ApplicationContext applicationContext) {
         MongoTemplateFactory.mongoTemplate = mongoTemplate;
+        MongoTemplateFactory.applicationContext = applicationContext;
     }
 
     private static Map<String, MongoTemplate> mongoTemplateMap = new HashMap<>();
@@ -47,12 +52,8 @@ public class MongoTemplateFactory {
             mongoClientMap.put(tenantId, MongoClients.create(mongoConfig.url()));
             mongoClient = mongoClientMap.get(tenantId);
         }
-        if (mongoClientMap.containsKey(tenantId)) {
-            mongoTemplateMap.put(tenantId, new MongoTemplate(mongoClient, database));
-            return mongoTemplateMap.get(tenantId);
-        }
-        mongoClientMap.put(tenantId, MongoClients.create(mongoConfig.getUrl()));
         mongoTemplateMap.put(tenantId, new MongoTemplate(mongoClient, database));
+        mongock(mongoTemplateMap.get(tenantId));
         return mongoTemplateMap.get(tenantId);
     }
 
@@ -68,5 +69,12 @@ public class MongoTemplateFactory {
         return mongoTransactionManager1;
     }
 
+
+    public static void mongock(MongoTemplate mongoTemplate1) {
+        MongockSpring5.builder()
+                .setDriver(SpringDataMongoV2Driver.withDefaultLock(mongoTemplate1))
+                .addChangeLogsScanPackage("com.learn.simple_demo.changelogs") // Your changelogs location
+                .setSpringContext(applicationContext).buildApplicationRunner().run(null);
+    }
 
 }
