@@ -16,6 +16,7 @@ public class SaveUseCase {
         mongoTemplate().save(mongoRecord);
         EntityMapper mapper = mapper(EntityMapper.class);
         mapper.insert(entity);
+
     }
 
 

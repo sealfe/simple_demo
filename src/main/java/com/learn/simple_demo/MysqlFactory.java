@@ -38,6 +38,8 @@ public class MysqlFactory {
 
     private static Map<String, PlatformTransactionManager> platformTransactionManagerMap = new HashMap<>();
 
+    private static Map<String, DataSource> dataSourceMap = new HashMap<>();
+
 
     public MysqlFactory(DataSourceTransactionManager dataSourceTransactionManager, MongoTemplate mongoTemplate) {
         MysqlFactory.dataSourceTransactionManager = dataSourceTransactionManager;
@@ -57,19 +59,12 @@ public class MysqlFactory {
     private static SqlSessionFactory getSessionFactory() {
         SqlSessionFactory sqlSessionFactory = sqlSessionFactoryMap.get(Context.getTenantId());
         if (sqlSessionFactory == null) {
-            MysqlConfig mysqlConfig = mongoTemplate.findOne(Query.query(Criteria.where("tenantId").is(Context.getTenantId())), MysqlConfig.class);
             MybatisSqlSessionFactoryBean sqlSessionFactoryBean = new MybatisSqlSessionFactoryBean();
             MybatisConfiguration ibatisConfiguration = new MybatisConfiguration();
             ibatisConfiguration.setMapUnderscoreToCamelCase(true);
             ibatisConfiguration.addMappers("com.learn.simple_demo.mysql.mapper");
             sqlSessionFactoryBean.setConfiguration(ibatisConfiguration);
-            HikariConfig config = new HikariConfig();
-            config.setJdbcUrl(mysqlConfig.getUrl());
-            config.setUsername(mysqlConfig.getUsername());
-            config.setPassword(mysqlConfig.getPassword());
-            config.setDriverClassName("com.mysql.cj.jdbc.Driver");
-            config.setAutoCommit(false);  // 设置 autoCommit 为 false
-            HikariDataSource hikariDataSource = new HikariDataSource(config);
+            DataSource hikariDataSource = getDataSource();
             sqlSessionFactoryBean.setDataSource(hikariDataSource);
 
             SqlSessionFactory object = sqlSessionFactoryBean.getObject();
@@ -78,6 +73,23 @@ public class MysqlFactory {
             migrate();
         }
         return sqlSessionFactory;
+    }
+
+    private static DataSource getDataSource() {
+        DataSource dataSource = dataSourceMap.get(Context.getTenantId());
+        if (dataSource == null) {
+            MysqlConfig mysqlConfig = mongoTemplate.findOne(Query.query(Criteria.where("tenantId").is(Context.getTenantId())), MysqlConfig.class);
+            HikariConfig config = new HikariConfig();
+            config.setJdbcUrl(mysqlConfig.getUrl());
+            config.setUsername(mysqlConfig.getUsername());
+            config.setPassword(mysqlConfig.getPassword());
+            config.setDriverClassName("com.mysql.cj.jdbc.Driver");
+            config.setAutoCommit(false);  // 设置 autoCommit 为 false
+            HikariDataSource hikariDataSource = new HikariDataSource(config);
+            dataSourceMap.put(Context.getTenantId(), hikariDataSource);
+            dataSource = dataSourceMap.get(Context.getTenantId());
+        }
+        return dataSource;
     }
 
 
@@ -103,11 +115,7 @@ public class MysqlFactory {
         return dataSourceTransactionManager1;
     }
 
-    private static DataSource getDataSource() {
-        MysqlConfig mysqlConfig = mongoTemplate.findOne(Query.query(Criteria.where("tenantId").is(Context.getTenantId())), MysqlConfig.class);
-        DataSource build = DataSourceBuilder.create().url(mysqlConfig.getUrl()).password(mysqlConfig.getPassword()).username(mysqlConfig.getUsername()).driverClassName("com.mysql.cj.jdbc.Driver").build();
-        return build;
-    }
+
 
 
     public static void migrate() {
