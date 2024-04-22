@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.learn.simple_demo.mysql.mapper.EntityMapper">
+  <resultMap id="BaseResultMap" type="com.learn.simple_demo.mysql.model.Entity">
+    <!--@mbg.generated-->
+    <!--@Table `entity`-->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="creator_id" jdbcType="VARCHAR" property="creatorId" />
+    <result column="updater_id" jdbcType="VARCHAR" property="updaterId" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="created_at_zone" jdbcType="VARCHAR" property="createdAtZone" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="updated_at_zone" jdbcType="VARCHAR" property="updatedAtZone" />
+    <result column="is_deleted" jdbcType="BOOLEAN" property="isDeleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    `id`, `name`, `creator_id`, `updater_id`, `created_at`, `created_at_zone`, `updated_at`, 
+    `updated_at_zone`, `is_deleted`
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from `entity`
+    where `id` = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    <!--@mbg.generated-->
+    delete from `entity`
+    where `id` = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.learn.simple_demo.mysql.model.Entity">
+    <!--@mbg.generated-->
+    insert into `entity` (`id`, `name`, `creator_id`, 
+      `updater_id`, `created_at`, `created_at_zone`, 
+      `updated_at`, `updated_at_zone`, `is_deleted`
+      )
+    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{creatorId,jdbcType=VARCHAR}, 
+      #{updaterId,jdbcType=VARCHAR}, #{createdAt,jdbcType=TIMESTAMP}, #{createdAtZone,jdbcType=VARCHAR}, 
+      #{updatedAt,jdbcType=TIMESTAMP}, #{updatedAtZone,jdbcType=VARCHAR}, #{isDeleted,jdbcType=BOOLEAN}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.learn.simple_demo.mysql.model.Entity">
+    <!--@mbg.generated-->
+    insert into `entity`
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        `id`,
+      </if>
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="creatorId != null">
+        `creator_id`,
+      </if>
+      <if test="updaterId != null">
+        `updater_id`,
+      </if>
+      <if test="createdAt != null">
+        `created_at`,
+      </if>
+      <if test="createdAtZone != null">
+        `created_at_zone`,
+      </if>
+      <if test="updatedAt != null">
+        `updated_at`,
+      </if>
+      <if test="updatedAtZone != null">
+        `updated_at_zone`,
+      </if>
+      <if test="isDeleted != null">
+        `is_deleted`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="creatorId != null">
+        #{creatorId,jdbcType=VARCHAR},
+      </if>
+      <if test="updaterId != null">
+        #{updaterId,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null">
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdAtZone != null">
+        #{createdAtZone,jdbcType=VARCHAR},
+      </if>
+      <if test="updatedAt != null">
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAtZone != null">
+        #{updatedAtZone,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null">
+        #{isDeleted,jdbcType=BOOLEAN},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.learn.simple_demo.mysql.model.Entity">
+    <!--@mbg.generated-->
+    update `entity`
+    <set>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="creatorId != null">
+        `creator_id` = #{creatorId,jdbcType=VARCHAR},
+      </if>
+      <if test="updaterId != null">
+        `updater_id` = #{updaterId,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null">
+        `created_at` = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdAtZone != null">
+        `created_at_zone` = #{createdAtZone,jdbcType=VARCHAR},
+      </if>
+      <if test="updatedAt != null">
+        `updated_at` = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAtZone != null">
+        `updated_at_zone` = #{updatedAtZone,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null">
+        `is_deleted` = #{isDeleted,jdbcType=BOOLEAN},
+      </if>
+    </set>
+    where `id` = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.learn.simple_demo.mysql.model.Entity">
+    <!--@mbg.generated-->
+    update `entity`
+    set `name` = #{name,jdbcType=VARCHAR},
+      `creator_id` = #{creatorId,jdbcType=VARCHAR},
+      `updater_id` = #{updaterId,jdbcType=VARCHAR},
+      `created_at` = #{createdAt,jdbcType=TIMESTAMP},
+      `created_at_zone` = #{createdAtZone,jdbcType=VARCHAR},
+      `updated_at` = #{updatedAt,jdbcType=TIMESTAMP},
+      `updated_at_zone` = #{updatedAtZone,jdbcType=VARCHAR},
+      `is_deleted` = #{isDeleted,jdbcType=BOOLEAN}
+    where `id` = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
