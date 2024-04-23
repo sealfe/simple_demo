@@ -2,22 +2,46 @@ package com.learn.simple_demo;
 
 
 import com.learn.simple_demo.mongodb.TenantData;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import com.learn.simple_demo.usecase.TenantDataUseCase;
+import com.learn.simple_demo.usecase.TenantDeleteUseCase;
+import com.learn.simple_demo.usecase.TenantSaveUseCase;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/business/api")
 public class BusinessApi {
 
 
+    @Autowired
+    private TenantSaveUseCase tenantSaveUseCase;
+
+    @Autowired
+    private TenantDeleteUseCase tenantDeleteUseCase;
+
+    @Autowired
+    private TenantDataUseCase tenantDataUseCase;
+
     @PostMapping("")
-    public void save(@RequestBody TenantData tenantData){
+    public void save(@RequestBody TenantData tenantData) {
+        tenantSaveUseCase.execute(tenantData);
+    }
 
-
+    @DeleteMapping("{id}")
+    public void delete(String id) {
+        tenantDeleteUseCase.execute(id);
     }
 
 
+    @GetMapping("{id}")
+    public TenantData select(String id) {
+        Context.resetTenantId(tenantDataUseCase.getTenantId(id));
+        return tenantDataUseCase.getTenantData(id);
+    }
 
 
+    @GetMapping
+    public TenantData select() {
+        return tenantDataUseCase.getTenantDatas();
+    }
 
 }

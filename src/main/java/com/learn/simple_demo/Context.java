@@ -4,6 +4,8 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import java.util.Objects;
+
 import static com.learn.simple_demo.MysqlFactory.chainedTransactionManager;
 
 public class Context {
@@ -12,6 +14,7 @@ public class Context {
 
 
     public static ThreadLocal<TransactionStatus> transactionStatus = new ThreadLocal<>();
+    public static ThreadLocal<String> bizName = new ThreadLocal<>();
 
     private static ThreadLocal<Integer> transactionDepth = ThreadLocal.withInitial(() -> 0);
 
@@ -58,7 +61,19 @@ public class Context {
 
     public static void clear() {
         tenantId.remove();
+        bizName.remove();
     }
 
 
+    public static void resetTenantId(String id) {
+        if (!Objects.equals(bizName.get(), "SD")) {
+            return;
+        }
+        tenantId.set(id);
+
+    }
+
+    public static void setBiz(String biz) {
+        bizName.set(biz);
+    }
 }

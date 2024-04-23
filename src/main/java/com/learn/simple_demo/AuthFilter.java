@@ -20,6 +20,7 @@ public class AuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         Context.setTenantId(request.getHeader("x-tenant-id"));
+        Context.setBiz(request.getHeader("x-biz"));
         filterChain.doFilter(request, response);
         Context.clear();
     }

@@ -11,6 +11,13 @@ public class TenantData {
 
     private String name;
 
-    private String idIndex;
+    private String idCard;
 
+    public TenantData toIndex() {
+        TenantData tenantData = new TenantData();
+        tenantData.setId(id);
+        tenantData.setTenantId(tenantId);
+        tenantData.setName(name);
+        return tenantData;
+    }
 }
