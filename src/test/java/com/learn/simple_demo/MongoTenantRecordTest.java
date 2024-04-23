@@ -18,7 +18,6 @@ public class MongoTenantRecordTest {
 
     @Test
     public void test() {
-
         mongoTemplate.save(new MongoConfig("tenant1", "mongodb://localhost:27017", "tenant1"));
         mongoTemplate.save(new MysqlConfig("tenant1", "jdbc:mysql://localhost:3306/tenant1?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC", "root", "root1234"));
     }
