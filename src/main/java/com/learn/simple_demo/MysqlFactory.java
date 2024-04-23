@@ -9,7 +9,6 @@ import lombok.SneakyThrows;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.flywaydb.core.Flyway;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -21,8 +20,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.learn.simple_demo.MongoTemplateFactory.mongoTransactionManager;
 
 @Configuration
 public class MysqlFactory {
@@ -57,7 +54,17 @@ public class MysqlFactory {
 
     @SneakyThrows
     private static SqlSessionFactory getSessionFactory() {
-        SqlSessionFactory sqlSessionFactory = sqlSessionFactoryMap.get(Context.getTenantId());
+        if (Context.proxyTenantId.get() != null) {
+            return getSqlSessionFactory(Context.proxyTenantId.get());
+        }
+        if ("SD".equals(Context.bizName.get())) {
+            return getSqlSessionFactory("default");
+        }
+        return getSqlSessionFactory(Context.getTenantId());
+    }
+
+    private static SqlSessionFactory getSqlSessionFactory(String tenantId) throws Exception {
+        SqlSessionFactory sqlSessionFactory = sqlSessionFactoryMap.get(tenantId);
         if (sqlSessionFactory == null) {
             MybatisSqlSessionFactoryBean sqlSessionFactoryBean = new MybatisSqlSessionFactoryBean();
             MybatisConfiguration ibatisConfiguration = new MybatisConfiguration();
@@ -68,8 +75,8 @@ public class MysqlFactory {
             sqlSessionFactoryBean.setDataSource(hikariDataSource);
 
             SqlSessionFactory object = sqlSessionFactoryBean.getObject();
-            sqlSessionFactoryMap.put(Context.getTenantId(), object);
-            sqlSessionFactory = sqlSessionFactoryMap.get(Context.getTenantId());
+            sqlSessionFactoryMap.put(tenantId, object);
+            sqlSessionFactory = sqlSessionFactoryMap.get(tenantId);
             migrate();
         }
         return sqlSessionFactory;
