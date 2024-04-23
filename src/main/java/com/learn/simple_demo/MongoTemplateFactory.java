@@ -15,10 +15,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
-import static com.learn.simple_demo.Context.bizName;
-import static com.learn.simple_demo.Context.getTenantId;
+import static com.learn.simple_demo.Context.*;
 
 @Configuration
 public class MongoTemplateFactory {
@@ -39,7 +37,16 @@ public class MongoTemplateFactory {
 
 
     public static MongoTemplate mongoTemplate() {
-        String tenantId = getTenantId();
+        if (proxyTenantId.get() != null) {
+            return getMongoTemplate(proxyTenantId.get());
+        }
+        if ("SD".equals(bizName.get())) {
+            return mongoTemplate;
+        }
+        return getMongoTemplate(getTenantId());
+    }
+
+    private static MongoTemplate getMongoTemplate(String tenantId) {
         if (mongoTemplateMap.containsKey(tenantId)) {
             return mongoTemplateMap.get(tenantId);
         }

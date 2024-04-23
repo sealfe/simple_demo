@@ -16,6 +16,8 @@ public class Context {
     public static ThreadLocal<TransactionStatus> transactionStatus = new ThreadLocal<>();
     public static ThreadLocal<String> bizName = new ThreadLocal<>();
 
+    public static ThreadLocal<String> proxyTenantId = new ThreadLocal<>();
+
     private static ThreadLocal<Integer> transactionDepth = ThreadLocal.withInitial(() -> 0);
 
     public static void setTenantId(String id) {
@@ -69,8 +71,7 @@ public class Context {
         if (!Objects.equals(bizName.get(), "SD")) {
             return;
         }
-        tenantId.set(id);
-
+        proxyTenantId.set(id);
     }
 
     public static void setBiz(String biz) {

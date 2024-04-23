@@ -1,5 +1,6 @@
 package com.learn.simple_demo.usecase;
 
+import com.learn.simple_demo.annotation.UseCase;
 import com.learn.simple_demo.mongodb.TenantData;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,7 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import static com.learn.simple_demo.MongoTemplateFactory.mongoTemplate;
 
-@Data
+@UseCase
 public class TenantDeleteUseCase {
 
     @Autowired

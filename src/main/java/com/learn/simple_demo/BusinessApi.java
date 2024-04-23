@@ -8,7 +8,10 @@ import com.learn.simple_demo.usecase.TenantSaveUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequestMapping("/business/api")
+@RestController
 public class BusinessApi {
 
 
@@ -23,24 +26,25 @@ public class BusinessApi {
 
     @PostMapping("")
     public void save(@RequestBody TenantData tenantData) {
+        tenantData.setTenantId(Context.getTenantId());
         tenantSaveUseCase.execute(tenantData);
     }
 
     @DeleteMapping("{id}")
-    public void delete(String id) {
+    public void delete(@PathVariable String id) {
         tenantDeleteUseCase.execute(id);
     }
 
 
     @GetMapping("{id}")
-    public TenantData select(String id) {
+    public TenantData select(@PathVariable String id) {
         Context.resetTenantId(tenantDataUseCase.getTenantId(id));
         return tenantDataUseCase.getTenantData(id);
     }
 
 
     @GetMapping
-    public TenantData select() {
+    public List<TenantData> select() {
         return tenantDataUseCase.getTenantDatas();
     }
 
