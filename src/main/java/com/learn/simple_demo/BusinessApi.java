@@ -32,6 +32,7 @@ public class BusinessApi {
 
     @DeleteMapping("{id}")
     public void delete(@PathVariable String id) {
+        Context.resetTenantId(tenantDataUseCase.getTenantId(id));
         tenantDeleteUseCase.execute(id);
     }
 
