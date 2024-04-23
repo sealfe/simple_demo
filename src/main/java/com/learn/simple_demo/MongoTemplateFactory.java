@@ -77,4 +77,11 @@ public class MongoTemplateFactory {
                 .setSpringContext(applicationContext).buildApplicationRunner().run(null);
     }
 
+
+    public static void clean() {
+        mongoTemplateMap.clear();
+        mongoClientMap.clear();
+        mongoTransactionManagerMap.clear();
+    }
+
 }

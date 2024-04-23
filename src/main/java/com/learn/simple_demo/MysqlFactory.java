@@ -116,8 +116,6 @@ public class MysqlFactory {
     }
 
 
-
-
     public static void migrate() {
         Flyway flyway = Flyway.configure()
                 .dataSource(getDataSource())
@@ -126,6 +124,14 @@ public class MysqlFactory {
                 .outOfOrder(true).load();
         flyway.baseline();
         flyway.migrate();
+    }
+
+    public static void clean() {
+        dataSourceMap.clear();
+        sqlSessionFactoryMap.clear();
+        platformTransactionManagerMap.clear();
+        dataSourceTransactionManagerMap.clear();
+
     }
 
 }

@@ -42,16 +42,24 @@ public class DbApi {
 
 
     @DeleteMapping("{id}")
-    public Boolean delete(@PathVariable String id){
+    public Boolean delete(@PathVariable String id) {
         deleteUseCase.execute(id);
         return true;
     }
 
 
-
     @PostMapping("exception")
-    public Boolean saveException(@RequestBody ApiInputPutDto inputPutDto){
+    public Boolean saveException(@RequestBody ApiInputPutDto inputPutDto) {
         saveExceptionUseCase.execute(inputPutDto.getEntity(), inputPutDto.getMongoRecord());
         return true;
     }
+
+
+    @PutMapping("refresh")
+    public Boolean refresh() {
+        MongoTemplateFactory.clean();
+        MysqlFactory.clean();
+        return true;
+    }
+
 }
